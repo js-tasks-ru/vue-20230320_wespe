@@ -1,20 +1,41 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ 'dropdown_opened': opened }">
+    <button
+      type="button"
+      @click="opened = !opened"
+      class="dropdown__toggle"
+      :class="{ 'dropdown__toggle_icon' : hasIconClass }"
+    >
+        <UiIcon v-if="selectedOption && selectedOption.icon" :icon="selectedOption.icon" class="dropdown__icon" />
+        {{ selectedOption ? selectedOption.text : title }}
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div class="dropdown__menu" role="listbox" v-show="opened">
+      <button
+        v-for="option in options"
+        @click="$emit('update:modelValue', option.value), opened=false"
+        :key="option.value"
+        class="dropdown__item"
+        :class="{ 'dropdown__item_icon' : hasIconClass }"
+        role="option"
+        type="button"
+      >
+        <UiIcon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
+
+    <select @change="$emit('update:modelValue', $event.target.value)">
+      <!-- <option :selected="selectedOption">{{ title }}</option> -->
+      <option
+        v-for="option in options"
+        :key="option.value"
+        :value="option.value"
+        :selected="selectedOption ? selectedOption.value === option.value : false"
+      >
+        {{ option.text }}
+      </option>
+    </select>
   </div>
 </template>
 
@@ -23,6 +44,40 @@ import UiIcon from './UiIcon.vue';
 
 export default {
   name: 'UiDropdown',
+
+  data() {
+    return {
+      opened: false,
+    }
+  },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+
+    title: {
+      type: String,
+      required: true,
+    },
+
+    modelValue: {
+      type: String
+    },
+  },
+
+  computed: {
+    selectedOption() {
+      return this.modelValue ? this.options.find(item => item.value === this.modelValue) : undefined
+    },
+
+    hasIconClass() {
+      return this.options.find(item => item.icon)
+    }
+  },
+
+  emits: ['update:modelValue'],
 
   components: { UiIcon },
 };
@@ -137,5 +192,16 @@ export default {
   top: 50%;
   left: 16px;
   transform: translate(0, -50%);
+}
+
+.dropdown select {
+    height: 100%!important;
+    opacity: 0.01!important;
+    padding: 0!important;
+    position: absolute!important;
+    bottom: 0;
+    left: 50%;
+    width: 1px!important;
+    z-index: -1!important;
 }
 </style>
