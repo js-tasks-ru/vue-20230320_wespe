@@ -1,7 +1,7 @@
 <template>
-    <div :class="toastClassName">
-      <UiIcon class="toast__icon" :icon="toast.toastIcon" />
-      <span>{{ toast.toastMessage }}</span>
+    <div :class="classList">
+      <UiIcon class="toast__icon" :icon="icon" />
+      <span>{{ message }}</span>
     </div>
 </template>
 
@@ -11,20 +11,45 @@ import UiIcon from './UiIcon.vue';
 export default {
   name: 'UiToast',
 
-  props: {
-    toast: {
-      type: Object,
-      requried: true,
-    },
+  data() {
+    return {
+      classList: {
+        'toast': true,
+        'toast_success': this.type === 'success',
+        'toast_error': this.type === 'error',
+      },
+    }
   },
 
-  computed: {
-    toastClassName() {
-      return `toast toast_${this.toast.toastType}`
+  props: {
+    icon: {
+      type: String,
+      required: true,
     },
+
+    message: {
+      type: String,
+      required: true,
+    },
+
+    type: {
+      type: String,
+      required: true,
+    },
+
+    id: {
+      type: Number,
+      required: true,
+    }
   },
 
   components: { UiIcon },
+
+  mounted() {
+    setTimeout(() => {
+      this.$parent.$emit('timeout', this.id)
+    }, 5000)
+  }
 }
 </script>
 

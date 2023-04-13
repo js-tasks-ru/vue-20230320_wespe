@@ -15,13 +15,14 @@
       </div>
       <div v-for="n in currentMonthDays" :key="n" class="calendar-view__cell" tabindex="0">
         <div class="calendar-view__cell-day">{{ n }}</div>
-        <div class="calendar-view__cell-content">
-          <a v-for="meetup in getMeetupsOfTheDay(n)"
+        <div v-if="meetupsInCurrentMonth[n]" class="calendar-view__cell-content">
+          <a v-for="meetup in meetupsInCurrentMonth[n]"
             :key="meetup.date"
             :href="`/meetups/${meetup.id}`"
             class="calendar-event"
           >
-          {{ meetup.title }}</a>
+            {{ meetup.title }}
+          </a>
         </div>
       </div>
       <div v-for="day in nextMonthDays" :key="day" class="calendar-view__cell calendar-view__cell_inactive" tabindex="0">
@@ -97,10 +98,22 @@ export default {
     },
 
     meetupsInCurrentMonth() {
-      return this.meetups.filter(meetup => {
+      const meetupsList = {};
+
+      this.meetups.filter(meetup => {
         return new Date(meetup.date).getMonth() + 1 === this.currentMonth &&
                new Date(meetup.date).getFullYear() === this.currentYear;
+      }).forEach(item => {
+          const day = new Date(item.date).getDate();
+
+          if (meetupsList[day]) {
+            meetupsList[day].push(item);
+          } else {
+            meetupsList[day] = [item];
+          }
       })
+
+      return meetupsList;
     },
   },
 
@@ -113,9 +126,9 @@ export default {
       this.date = new Date(this.date.setMonth(this.currentMonth, 1));
     },
 
-    getMeetupsOfTheDay(n) {
-      return this.meetupsInCurrentMonth.filter(meetup => new Date(meetup.date).getDate() === n)
-    }
+    // getMeetupsOfTheDay(n) {
+    //   return this.meetupsInCurrentMonth.filter(meetup => new Date(meetup.date).getDate() === n)
+    // }
   },
 };
 </script>

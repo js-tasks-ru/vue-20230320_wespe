@@ -1,6 +1,13 @@
 <template>
   <div class="toasts">
-    <UiToast v-for="toast in toasts" :key="toast.toastShowTime" :toast="toast" />
+    <UiToast
+      v-for="toast in toasts"
+      :key="toast.id"
+      :id="toast.id"
+      :icon="toast.icon"
+      :message="toast.message"
+      :type="toast.type"
+    />
   </div>
 </template>
 
@@ -16,6 +23,8 @@ export default {
       required: true,
     }
   },
+
+  emits: ['timeout'],
 
   components: { UiToast },
 }

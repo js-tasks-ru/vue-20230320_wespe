@@ -1,5 +1,5 @@
  <template>
-  <UiToastList v-if="toasts.length" :toasts="toasts" />
+  <UiToastList v-if="toasts.length" :toasts="toasts" @timeout="removeToast" />
 </template>
 
 <script>
@@ -11,8 +11,6 @@ export default {
   data() {
     return {
       toasts: [],
-      timerCount: 0,
-      toastLiveTime: 5000,
     }
   },
 
@@ -25,28 +23,15 @@ export default {
     },
     addToast(msg, type, icon) {
       this.toasts.push({
-        toastMessage: msg,
-        toastType: type,
-        toastIcon: icon,
-        toastShowTime: this.timerCount,
-        toastHideTime: this.timerCount + this.toastLiveTime,
+        message: msg,
+        type: type,
+        icon: icon,
+        id: Date.now(),
       })
     },
-    startTimer() {
-      setInterval(() => {
-        this.timerCount+=100;
-
-        this.toasts.forEach((item, i) => {
-          if (this.timerCount > item.toastHideTime) {
-              this.toasts.splice(i, 1);
-          }
-        });
-      }, 100);
-    },
-  },
-
-  mounted() {
-    this.startTimer();
+    removeToast(id) {
+      this.toasts.splice((this.toasts.indexOf(this.toasts.find(toast => toast.id === id))), 1);
+    }
   },
 
   components: { UiToastList },
