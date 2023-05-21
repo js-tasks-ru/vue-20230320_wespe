@@ -7,6 +7,7 @@
       :icon="toast.icon"
       :message="toast.message"
       :type="toast.type"
+      @timeout="timeout"
     />
   </div>
 </template>
@@ -24,9 +25,15 @@ export default {
     }
   },
 
-  emits: ['timeout'],
-
   components: { UiToast },
+
+  methods: {
+    timeout(id) {
+      this.$emit('timeout', id)
+    }
+  },
+
+  emits: ['timeout'],
 }
 </script>
 

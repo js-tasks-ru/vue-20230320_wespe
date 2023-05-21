@@ -26,7 +26,7 @@ export default {
         message: msg,
         type: type,
         icon: icon,
-        id: Date.now(),
+        id: Date.now() + Math.random(),
       })
     },
     removeToast(id) {

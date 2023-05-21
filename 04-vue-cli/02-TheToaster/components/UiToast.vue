@@ -1,5 +1,8 @@
 <template>
-    <div :class="classList">
+    <div class="toast" :class="{
+      toast_success: type === 'success',
+      toast_error: type === 'error',
+    }">
       <UiIcon class="toast__icon" :icon="icon" />
       <span>{{ message }}</span>
     </div>
@@ -10,16 +13,6 @@ import UiIcon from './UiIcon.vue';
 
 export default {
   name: 'UiToast',
-
-  data() {
-    return {
-      classList: {
-        'toast': true,
-        'toast_success': this.type === 'success',
-        'toast_error': this.type === 'error',
-      },
-    }
-  },
 
   props: {
     icon: {
@@ -45,9 +38,11 @@ export default {
 
   components: { UiIcon },
 
+  emits: ['timeout'],
+
   mounted() {
     setTimeout(() => {
-      this.$parent.$emit('timeout', this.id)
+      this.$emit('timeout', this.id)
     }, 5000)
   }
 }
