@@ -42,7 +42,7 @@ export default {
 
   mounted() {
     setTimeout(() => {
-      this.$emit('timeout', this.id)
+      this.$emit('timeout')
     }, 5000)
   }
 }

@@ -7,7 +7,7 @@
       :icon="toast.icon"
       :message="toast.message"
       :type="toast.type"
-      @timeout="timeout"
+      @timeout="timeout(toast.id)"
     />
   </div>
 </template>
