@@ -15,6 +15,9 @@ const router = createRouter({
         requireGuest: true,
       },
       component: () => import('../views/PageLogin.vue'),
+      beforeEnter: () => {
+        if (isAuthenticated()) return { path: '/' }
+      },
     },
     {
       path: '/register',
@@ -22,6 +25,9 @@ const router = createRouter({
         requireGuest: true,
       },
       component: () => import('../views/PageRegister.vue'),
+      beforeEnter: () => {
+        if (isAuthenticated()) return { path: '/' }
+      },
     },
     {
       path: '/meetups/create',
@@ -29,6 +35,11 @@ const router = createRouter({
         requireAuth: true,
       },
       component: () => import('../views/PageCreateMeetup.vue'),
+      beforeEnter: (to) => {
+        if (!isAuthenticated()) {
+          return { path: '/login', query: { from: to.path } }
+        }
+      },
     },
     {
       path: '/meetups/:meetupId(\\d+)/edit',
@@ -36,6 +47,11 @@ const router = createRouter({
         requireAuth: true,
       },
       component: () => import('../views/PageEditMeetup.vue'),
+      beforeEnter: (to) => {
+        if (!isAuthenticated()) {
+          return { path: '/login', query: { from: to.path } }
+        }
+      },
     },
   ],
 });
